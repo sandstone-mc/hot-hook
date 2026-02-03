@@ -69,6 +69,18 @@ export interface InitOptions {
    * @default true
    */
   watch?: boolean
+
+  /**
+   * Patterns for modules that should remain global singletons.
+   * These modules will NOT have version query params added to their URLs,
+   * ensuring they are cached as a single instance across all imports.
+   *
+   * This is useful for libraries that maintain global state (like sandstone)
+   * which need to be the same instance when imported from different places.
+   *
+   * Example: `['node_modules/sandstone']`
+   */
+  globalSingletons?: string[]
 }
 
 export type InitializeHookOptions = Pick<
@@ -80,6 +92,7 @@ export type InitializeHookOptions = Pick<
   | 'restart'
   | 'throwWhenBoundariesAreNotDynamicallyImported'
   | 'watch'
+  | 'globalSingletons'
 > & {
   /**
    * The message port to communicate with the parent thread.

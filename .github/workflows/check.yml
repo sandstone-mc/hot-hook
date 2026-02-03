@@ -9,19 +9,14 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 24
-
-      - name: Install pnpm
-        run: corepack enable
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
 
       - name: Install dependencies
-        run: pnpm install
+        run: bun install
 
       - name: Lint
-        run: pnpm lint
+        run: bun run lint
 
   typecheck:
     runs-on: ubuntu-latest
@@ -29,21 +24,16 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 24
-
-      - name: Install pnpm
-        run: corepack enable
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
 
       - name: Install dependencies
         run: |
-          pnpm install
-          pnpm build
+          bun install
+          bun run build
 
       - name: Typecheck
-        run: pnpm typecheck
+        run: bun run typecheck
 
   tests:
     strategy:
@@ -61,15 +51,15 @@ jobs:
         with:
           node-version: ${{ matrix.node }}
 
-      - name: Install pnpm
-        run: corepack enable
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
 
       - name: Install dependencies
         run: |
-          pnpm install
-          pnpm -r build
+          bun install
+          bun run build
 
       - name: Run tests
         env:
           FORCE_COLOR: 1
-        run: pnpm test
+        run: bun run test

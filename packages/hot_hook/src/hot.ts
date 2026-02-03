@@ -77,7 +77,7 @@ class Hot {
      */
     this.#messageChannel = new MessageChannel()
 
-    register('hot-hook/loader', {
+    register('@sandstone-mc/hot-hook/loader', {
       parentURL: import.meta.url,
       transferList: [this.#messageChannel.port2],
       data: {
@@ -88,6 +88,7 @@ class Hot {
         boundaries: this.#options.boundaries,
         messagePort: this.#messageChannel.port2,
         rootDirectory: this.#options.rootDirectory,
+        globalSingletons: this.#options.globalSingletons,
         throwWhenBoundariesAreNotDynamicallyImported:
           this.#options.throwWhenBoundariesAreNotDynamicallyImported,
       } satisfies InitializeHookOptions,
@@ -147,6 +148,17 @@ class Hot {
     )
 
     return result.dump
+  }
+
+  /**
+   * Notify hot-hook about a file change. Use this when hot-hook's internal
+   * watcher is disabled (watch: false) and you want to trigger invalidation
+   * from an external file watcher.
+   *
+   * This is fire-and-forget - the loader will process the change asynchronously.
+   */
+  notifyFileChange(filePath: string): void {
+    this.#messageChannel.port1.postMessage({ type: 'hot-hook:file-changed', path: filePath })
   }
 }
 

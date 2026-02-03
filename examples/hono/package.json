@@ -11,8 +11,8 @@
     "hono": "^4.11.0"
   },
   "devDependencies": {
-    "@hot-hook/runner": "workspace:*",
-    "hot-hook": "workspace:*"
+    "@hot-hook/runner": "file:../../packages/runner",
+    "hot-hook": "file:../../packages/hot_hook"
   },
   "hotHook": {
     "boundaries": [

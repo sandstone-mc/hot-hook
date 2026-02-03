@@ -22,11 +22,11 @@
     "build": "tsc && vite build && tsc -p tsconfig.node.json",
     "preview": "vite preview",
     "typecheck": "tsc --noEmit",
-    "prepublishOnly": "pnpm lint && pnpm build",
+    "prepublishOnly": "bun run lint && bun run build",
     "lint": "eslint ."
   },
   "peerDependencies": {
-    "hot-hook": "workspace:*"
+    "hot-hook": "*"
   },
   "dependencies": {
     "@unocss/reset": "^66.5.10",
@@ -37,7 +37,7 @@
   },
   "devDependencies": {
     "@preact/preset-vite": "^2.10.2",
-    "hot-hook": "workspace:*",
+    "hot-hook": "file:../hot_hook",
     "unocss": "^66.5.10",
     "vite": "^6.4.1",
     "vite-plugin-singlefile": "^2.3.0"

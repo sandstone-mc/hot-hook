@@ -1,5 +1,5 @@
 {
-  "name": "hot-hook",
+  "name": "@sandstone-mc/hot-hook",
   "type": "module",
   "version": "0.4.1-next.4",
   "description": "Easy hot module reloading (HMR) for Node.js and ESM",
@@ -33,10 +33,10 @@
     "lint": "eslint . --ext=.ts",
     "format": "prettier --write .",
     "quick:test": "node --import=./tsnode.esm.js --enable-source-maps bin/test.ts",
-    "pretest": "pnpm lint",
-    "test": "c8 pnpm quick:test",
-    "build": "pnpm clean && tsc",
-    "prepublishOnly": "pnpm lint && pnpm build"
+    "pretest": "bun run lint",
+    "test": "c8 bun run quick:test",
+    "build": "bun run clean && tsc",
+    "prepublishOnly": "bun run lint && bun run build"
   },
   "dependencies": {
     "chokidar": "^5.0.0",

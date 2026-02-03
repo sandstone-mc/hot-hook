@@ -69,6 +69,16 @@ export default class DependencyTree {
   }
 
   /**
+   * Set whether a file is reloadable
+   */
+  setReloadable(path: string, reloadable: boolean): void {
+    const node = this.#pathMap.get(path)
+    if (node) {
+      node.reloadable = reloadable
+    }
+  }
+
+  /**
    * Get the version of a file
    */
   getVersion(path: string): number {

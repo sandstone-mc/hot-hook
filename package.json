@@ -2,17 +2,20 @@
   "name": "@hot-hook/monorepo",
   "type": "module",
   "version": "0.0.0",
-  "packageManager": "pnpm@10.25.0",
   "description": "Monorepo for Hot Hook",
   "author": "Julien Ripouteau <julien@ripouteau.com>",
   "license": "ISC",
   "keywords": [],
+  "workspaces": [
+    "packages/*",
+    "examples/*"
+  ],
   "scripts": {
-    "typecheck": "pnpm run -r --parallel typecheck",
+    "typecheck": "bun run --filter '*' typecheck",
     "lint": "eslint . --ext=.ts",
-    "test": "pnpm run -r --parallel test",
-    "build": "pnpm run -r build",
-    "release": "pnpm run build && changeset publish"
+    "test": "bun run --filter '*' test",
+    "build": "bun run --cwd packages/hot_hook build && bun run --cwd packages/runner build && bun run --cwd packages/dump_viewer build",
+    "release": "bun run build && changeset publish"
   },
   "devDependencies": {
     "@adonisjs/tsconfig": "^1.4.1",
