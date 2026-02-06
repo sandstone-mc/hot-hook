@@ -108,7 +108,9 @@ export class HotHookLoader {
     debug('File change %s', relativeFilePath)
 
     const filePath = normalizePath(pathResolve(relativeFilePath))
-    const realFilePath = await realpath(filePath).catch(() => null).then(p => p ? normalizePath(p) : null)
+    const realFilePath = await realpath(filePath)
+      .catch(() => null)
+      .then((p) => (p ? normalizePath(p) : null))
 
     /**
      * Realpath throws an error when the file does not exist.

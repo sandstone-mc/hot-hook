@@ -1,9 +1,18 @@
 {
   "name": "@sandstone-mc/hot-hook",
   "type": "module",
-  "version": "0.4.1-next.4",
-  "description": "Easy hot module reloading (HMR) for Node.js and ESM",
-  "author": "Julien Ripouteau <julien@ripouteau.com>",
+  "version": "0.1.0",
+  "description": "Simple HMR for NodeJS + ESM, adapted for Sandstone CLI ",
+  "contributors": [
+    {
+      "name": "Julien Ripouteau",
+      "email": "julien@ripouteau.com",
+      "url": "https://github.com/Julien-R44"
+    },
+    {
+      "name": "MulverineX"
+    }
+  ],
   "license": "MIT",
   "keywords": [
     "hmr",
