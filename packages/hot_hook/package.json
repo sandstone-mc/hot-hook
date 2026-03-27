@@ -2,7 +2,7 @@
   "name": "@sandstone-mc/hot-hook",
   "type": "module",
   "version": "0.1.0",
-  "description": "Simple HMR for NodeJS + ESM, adapted for Sandstone CLI ",
+  "description": "Simple HMR for NodeJS + ESM, adapted for Sandstone CLI",
   "contributors": [
     {
       "name": "Julien Ripouteau",
@@ -14,6 +14,11 @@
     }
   ],
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sandstone-mc/hot-hook.git",
+    "directory": "packages/hot_hook"
+  },
   "keywords": [
     "hmr",
     "hot",

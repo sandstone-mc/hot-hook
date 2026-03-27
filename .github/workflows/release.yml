@@ -1,0 +1,93 @@
+name: Publish to npm
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+permissions:
+  id-token: write
+  contents: write
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: packages/hot_hook
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: Install dependencies
+        run: bun install
+        working-directory: .
+
+      - name: Build
+        run: bun run build
+
+      - name: Publish to npm
+        run: npm publish --provenance --access public
+
+      - name: Prepare release metadata
+        id: release
+        working-directory: .
+        run: |
+          TAG="${GITHUB_REF_NAME}"
+          PREV_TAG=$(git tag --sort=-v:refname | grep -v "^${TAG}$" | head -n1)
+          echo "prev_tag=${PREV_TAG}" >> $GITHUB_OUTPUT
+
+          # Get commit message
+          COMMIT_MSG=$(git log -1 --format=%B)
+          COMMIT_TITLE=$(echo "$COMMIT_MSG" | head -n1)
+          COMMIT_BODY=$(echo "$COMMIT_MSG" | tail -n +3)
+
+          # Remove emoji prefix from title
+          CLEAN_TITLE=$(echo "$COMMIT_TITLE" | sed -E 's/^[^ ]+ //')
+
+          # Release title
+          echo "title=${TAG} - ${CLEAN_TITLE}" >> $GITHUB_OUTPUT
+
+          # Build release body
+          {
+            if [[ -n "$COMMIT_BODY" ]]; then
+              echo "$COMMIT_BODY"
+              echo ""
+            fi
+
+            if [[ -n "$PREV_TAG" ]]; then
+              echo "<details>"
+              echo "<summary>Commits since ${PREV_TAG}</summary>"
+              echo ""
+              for COMMIT in $(git log --format="%H" "${PREV_TAG}..${TAG}"); do
+                SUBJECT=$(git log -1 --format="%s" "$COMMIT")
+                AUTHOR=$(git log -1 --format="%an" "$COMMIT")
+                COAUTHORS=$(git log -1 --format="%(trailers:key=Co-authored-by,valueonly)" "$COMMIT" | sed -n 's/\(.*\) <.*/\1/p' | sed 's/^/, @/')
+                echo "- $COMMIT $SUBJECT (@${AUTHOR}${COAUTHORS})"
+              done
+              echo ""
+              echo "</details>"
+              echo ""
+              echo "**Full Changelog**: [${PREV_TAG}...${TAG}](compare/${PREV_TAG}...${TAG})"
+            fi
+          } > release_body.md
+
+      - name: Create GitHub Release
+        working-directory: .
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "${{ github.ref_name }}" \
+            --title "${{ steps.release.outputs.title }}" \
+            --notes-file release_body.md
