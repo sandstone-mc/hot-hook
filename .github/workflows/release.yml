@@ -12,12 +12,13 @@ permissions:
 
 jobs:
   publish:
+    environment: release
     runs-on: ubuntu-latest
     defaults:
       run:
         working-directory: packages/hot_hook
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
         with:
           fetch-depth: 0
 
@@ -25,10 +26,14 @@ jobs:
         uses: oven-sh/setup-bun@v2
 
       - name: Setup Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
-          node-version: '22'
+          node-version: '24'
           registry-url: 'https://registry.npmjs.org'
+      
+      # Because GitHub & NPM can't figure out their shit
+      - name: Update NPM
+        run: npm install -g npm@latest
 
       - name: Install dependencies
         run: bun install
@@ -38,7 +43,7 @@ jobs:
         run: bun run build
 
       - name: Publish to npm
-        run: npm publish --provenance --access public
+        run: npm publish --provenance
 
       - name: Prepare release metadata
         id: release
@@ -79,7 +84,7 @@ jobs:
               echo ""
               echo "</details>"
               echo ""
-              echo "**Full Changelog**: [${PREV_TAG}...${TAG}](compare/${PREV_TAG}...${TAG})"
+              echo "**Full Changelog**: [${PREV_TAG}...${TAG}](https://github.com/sandstone-mc/hot-hook/compare/${PREV_TAG}...${TAG})"
             fi
           } > release_body.md
 
